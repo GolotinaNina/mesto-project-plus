@@ -29,9 +29,9 @@ export const createCard = async (req: Request, res: Response) => {
     return res.status(RESOURCE_CREATED).send({ data: newCard }); // возвращаю ее с сервера
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
-      return res.status(BAD_REQUEST_ERROR).send({ message: "Некоректные данные" });
+      return res.status(BAD_REQUEST_ERROR).send({ message: 'Incorrect data' });
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Внутренняя ошибка сервера" });
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
 };
 
@@ -51,11 +51,12 @@ export const deleteCardById = async (req: Request, res: Response) => {
     return res.send(card);
   } catch (error) {
     if (error instanceof Error && error.name === 'NotFoundError') { // карточка не найдена
-      return res.status(NOT_FOUND_ERROR).send({ message: "Card was not found" });
+      return res.status(NOT_FOUND_ERROR).send({ message: 'Card was not found' });
     }
-    if (error instanceof Error && error.name === 'CastError')
-      return res.status(BAD_REQUEST_ERROR).send({message: "Non-correct identifier"})
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server error" }); // ошибка сервера
+    if (error instanceof Error && error.name === 'CastError') {
+      return res.status(BAD_REQUEST_ERROR).send({ message: 'Non-correct identifier' });
+    }
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }); // ошибка сервера
   }
 };
 
@@ -75,9 +76,9 @@ const updateLike = async (req: Request, res: Response, next: NextFunction, metho
       return res.status(NOT_FOUND_ERROR).send({ message: error.message });
     }
     if (error instanceof mongoose.Error.CastError) {
-      return res.status(BAD_REQUEST_ERROR).send({ message: "Incorrect data" });
+      return res.status(BAD_REQUEST_ERROR).send({ message: 'Incorrect data' });
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server error" });
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
 };
 

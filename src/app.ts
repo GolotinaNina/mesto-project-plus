@@ -5,13 +5,12 @@ import express, {
   Response,
 } from 'express';
 import mongoose from 'mongoose';
-import path from 'path';
 import 'dotenv/config';
 import cardRouter from './routes/cards';
 import userRouter from './routes/users';
-import { NOT_FOUND_ERROR } from 'constants/constants';
+import { NOT_FOUND_ERROR } from './constants/constants';
 
-const { PORT = 3000, MONGO_URL = "" } = process.env;
+const { PORT = 3000, MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 const app = express();
 
 app.use(json());
@@ -28,18 +27,15 @@ app.use('/users', userRouter);
 
 app.use('/cards', cardRouter);
 
-app.use((res: Response) => {
-  res.status(NOT_FOUND_ERROR).send("Sorry, that route doesn't exist.");
+app.use((req: Request, res: Response) => {
+  res.status(NOT_FOUND_ERROR).send({ message: "Sorry, that route doesn't exist." });
 });
 
 // Подключаюсь к базе данных:
 const connect = async () => {
   mongoose.set('strictQuery', true);
   await mongoose.connect(MONGO_URL as string);
-  console.log('Connected to the database');
-
   await app.listen(PORT);
-  console.log(`App listening on port ${PORT}`);
 };
 
 connect();

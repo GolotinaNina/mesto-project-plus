@@ -33,12 +33,12 @@ export const getUserById = async (req: Request, res: Response) => {
     return res.send(user);
   } catch (error) {
     if (error instanceof Error && error.name === 'NotFoundError') {
-      return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
+      return res.status(NOT_FOUND_ERROR).send({ message: 'User not found' });
     }
     if (error instanceof mongoose.Error.CastError) {
       return res.status(BAD_REQUEST_ERROR).send({ message: 'Invalid user id' });
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server error" });
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
 };
 
@@ -52,9 +52,9 @@ export const createUser = async (req: Request, res: Response) => {
     return res.status(RESOURCE_CREATED).send({ data: newUser });
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
-      return res.status(BAD_REQUEST_ERROR).send({ message: "Incorrect user data" });
+      return res.status(BAD_REQUEST_ERROR).send({ message: 'Incorrect user data' });
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server error" });
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
 };
 
@@ -65,7 +65,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     // подразумевается, что в теле запроса пришел профиль уже с обновленными полями
     // вытаскиваю их из req.body
     const { name, about } = req.body;
-    const updatedUser = await User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true})
+    const updatedUser = await User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
       .orFail(() => {
         const error = new Error('User not found');
         error.name = 'NotFoundError';
@@ -74,15 +74,15 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     return res.send(updatedUser);
   } catch (error) {
     if (error instanceof Error && error.name === 'NotFoundError') {
-      return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
+      return res.status(NOT_FOUND_ERROR).send({ message: 'User not found' });
     }
-    if (error instanceof Error && error.name === 'ValidationError'){
-      return res.status(BAD_REQUEST_ERROR).send({message: "Invalid user data"});
+    if (error instanceof Error && error.name === 'ValidationError') {
+      return res.status(BAD_REQUEST_ERROR).send({ message: 'Invalid user data' });
     }
     if (error instanceof mongoose.Error.CastError) {
       return res.status(BAD_REQUEST_ERROR).send({ message: 'Invalid user data' });
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server error" });
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
 };
 
@@ -92,7 +92,7 @@ export const updateUserAvatar = async (req: Request, res: Response) => {
     const { _id } = req.body.user; // id текущего пользователя
     // пришедший в теле запроса новый аватар - вытаскиваю:
     const { avatar } = req.body;
-    const updatedAvatar = await User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true})
+    const updatedAvatar = await User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
       .orFail(() => {
         const error = new Error('User not found');
         error.name = 'NotFoundError';
@@ -101,14 +101,14 @@ export const updateUserAvatar = async (req: Request, res: Response) => {
     return res.send(updatedAvatar);
   } catch (error) {
     if (error instanceof Error && error.name === 'NotFoundError') {
-      return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
+      return res.status(NOT_FOUND_ERROR).send({ message: 'User not found' });
     }
-    if (error instanceof Error && error.name === 'ValidationError'){
-      return res.status(BAD_REQUEST_ERROR).send({message: "Invalid user data"})
+    if (error instanceof Error && error.name === 'ValidationError') {
+      return res.status(BAD_REQUEST_ERROR).send({ message: 'Invalid user data' });
     }
     if (error instanceof mongoose.Error.CastError) {
       return res.status(BAD_REQUEST_ERROR).send({ message: 'Invalid user data' });
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server error" });
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
 };
