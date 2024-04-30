@@ -1,7 +1,8 @@
+{
     "env": {
         "es2021": true,
         "node": true
-    },
+      },
     "extends": [
         "airbnb-base"
     ],
@@ -36,6 +37,8 @@
                 "js": "never",
                 "ts": "never"
             }
-        ]
-    },
+        ],
+        "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    }
 }
+

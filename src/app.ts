@@ -9,8 +9,9 @@ import path from 'path';
 import 'dotenv/config';
 import cardRouter from './routes/cards';
 import userRouter from './routes/users';
+import { NOT_FOUND_ERROR } from 'constants/constants';
 
-const { PORT = 3000, MONGO_URL } = process.env;
+const { PORT = 3000, MONGO_URL = "" } = process.env;
 const app = express();
 
 app.use(json());
@@ -27,7 +28,9 @@ app.use('/users', userRouter);
 
 app.use('/cards', cardRouter);
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use((res: Response) => {
+  res.status(NOT_FOUND_ERROR).send("Sorry, that route doesn't exist.");
+});
 
 // Подключаюсь к базе данных:
 const connect = async () => {
