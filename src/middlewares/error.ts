@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ERROR_SERVER } from '../utils/error';
+import { INTERNAL_SERVER_ERROR } from '../constants/constants';
 
 export default (
   err: { statusCode: number, message: string },
@@ -7,12 +7,12 @@ export default (
   res: Response,
   next: NextFunction,
 ) => {
-  const { statusCode = ERROR_SERVER, message } = err;
+  const { statusCode = INTERNAL_SERVER_ERROR, message } = err;
   res
     .status(statusCode)
     .send({
-      message: statusCode === ERROR_SERVER
-        ? 'На сервере произошла ошибка'
+      message: statusCode === INTERNAL_SERVER_ERROR
+        ? 'Internal server error'
         : message,
     });
   next();

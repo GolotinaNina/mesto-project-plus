@@ -16,6 +16,6 @@ export default (req: Request, res: Response, next: NextFunction) => {
     throw new Unathorized('Необходима авторизация');
   }
 
-  req.user = payload as { _id: JwtPayload };
+  req.body.user = payload as { _id: JwtPayload };
   next();
 };
