@@ -1,5 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import {
   BAD_REQUEST_ERROR,
   NOT_FOUND_ERROR,
@@ -7,10 +9,11 @@ import {
   INTERNAL_SERVER_ERROR,
 } from '../constants/constants';
 import User from '../models/user';
+import BadRequest from '../utils/errors/BadRequest';
+import NotFound from '../utils/errors/NotFound';
 
 // Контроллеры (controllers) содержат основную логику обработки запроса.
 // Методы описывают, как обрабатывать данные и какой результат возвращать.
-
 // Получаем всех пользователей
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -45,7 +48,12 @@ export const getUserById = async (req: Request, res: Response) => {
 // Создаем нового пользователя
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const newUser = await User.create(req.body);
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    const newUser = bcrypt.hash(password, 10).then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }));
     if (!newUser) {
       throw new Error('User not found');
     }
@@ -111,4 +119,36 @@ export const updateUserAvatar = async (req: Request, res: Response) => {
     }
     return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
   }
+};
+
+export const login = (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((userInformation) => {
+      res
+        .send({
+          token: jwt.sign({ _id: userInformation._id }, 'super-strong-secret', { expiresIn: '7d' }),
+        });
+    })
+    .catch((error) => {
+      res.status(401).send({ message: error.message });
+    });
+};
+
+export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
+  User.findById(req.body.user._id)
+    .then((userInformation) => {
+      if (!userInformation) {
+        throw new NotFound('Пользователь по указанному _id не найден');
+      } else {
+        res.send(userInformation);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest('Запрашиваемый id некорректен'));
+      } else {
+        next(err);
+      }
+    });
 };
