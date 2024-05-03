@@ -6,6 +6,7 @@ import {
   Model,
   Document,
 } from 'mongoose';
+import bcrypt from 'bcrypt';
 // Здесь описание схемы пользователя
 
 interface IUser {
@@ -53,6 +54,22 @@ const userSchema = new Schema<IUser, IUserModel>({
 }, {
   versionKey: false,
   timestamps: true,
+});
+
+userSchema.static('findUserByCredentials', function findUserByCredentials(email: string, password: string) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Wrong email or password'));
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Wrong email or password'));
+          }
+          return user;
+        });
+    });
 });
 
 // Создаю на основе схемы модель, чтобы превратить заготовку в документ

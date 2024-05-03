@@ -121,7 +121,7 @@ export const updateUserAvatar = async (req: Request, res: Response) => {
   }
 };
 
-export const login = (req: Request, res: Response, next: NextFunction) => {
+export const login = (req: Request, res: Response) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((userInformation) => {
@@ -130,7 +130,9 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
           token: jwt.sign({ _id: userInformation._id }, 'super-strong-secret', { expiresIn: '7d' }),
         });
     })
-    .catch(next);
+    .catch((error) => {
+      res.status(401).send({ message: error.message });
+    });
 };
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {

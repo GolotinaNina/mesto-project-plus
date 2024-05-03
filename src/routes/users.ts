@@ -19,11 +19,11 @@ const userRouter = Router();
 // Маршрут возвращает всех пользователей
 userRouter.get('/', getUsers);
 
-// Возвращает пользователя по _id
-userRouter.get('/:userId', getUserValidation, getUserById);
-
 // Возвращает текущего пользователя
 userRouter.get('/me', getCurrentUser);
+
+// Возвращает пользователя по _id
+userRouter.get('/:userId', getUserValidation, getUserById);
 
 // Создаёт пользователя
 userRouter.post('/', createUser);
