@@ -60,8 +60,8 @@ export const getUserValidation = celebrate({
 
 export const updateUserValidation = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: NAME_VALIDATION,
-    about: ABOUT_VALIDATION,
+    name: NAME_VALIDATION.required(),
+    about: ABOUT_VALIDATION.required(),
   }),
 });
 

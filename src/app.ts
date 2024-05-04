@@ -1,13 +1,14 @@
 import express, {
   Request,
   Response,
+  NextFunction,
 } from 'express';
 import mongoose from 'mongoose';
 import 'dotenv/config';
 import { errors } from 'celebrate';
 import cardRouter from './routes/cards';
 import userRouter from './routes/users';
-import { NOT_FOUND_ERROR } from './constants/constants';
+import NotFound from './utils/errors/NotFound';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import auth from './middlewares/auth';
 import { signinValidation, createUserValidation } from './utils/validation';
@@ -25,15 +26,12 @@ app.use(requestLogger);
 app.post('/signin', signinValidation, login);
 app.post('/signup', createUserValidation, createUser);
 
-app.use(auth);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardRouter);
 
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
-
-app.use((req: Request, res: Response) => {
-  res.status(NOT_FOUND_ERROR).send({ message: "Sorry, that route doesn't exist." });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  next(new NotFound("Sorry, that route doesn't exist."));
 });
-
 app.use(errorLogger);
 app.use(errors());
 app.use(error);
