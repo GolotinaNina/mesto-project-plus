@@ -113,7 +113,7 @@ export const login = (req: Request, res: Response, next:NextFunction) => {
         });
     })
     .catch((error) => {
-      next(new Unathorized(error.message));
+      next(error);
     });
 };
 

@@ -13,7 +13,7 @@ export const getCards = async (req: Request, res: Response, next: NextFunction) 
     const cards = await Card.find({});
     return res.send(cards);
   } catch (error) {
-    return next();
+    return next(error);
   }
 };
 
@@ -28,7 +28,7 @@ export const createCard = async (req: Request, res: Response, next: NextFunction
     if (error instanceof mongoose.Error.ValidationError) {
       return next(new BadRequest('Incorrect data'));
     }
-    return next();
+    return next(error);
   }
 };
 
@@ -66,7 +66,7 @@ const updateLike = async (req: Request, res: Response, next: NextFunction, metho
     if (error instanceof mongoose.Error.CastError) {
       return next(new BadRequest('Incorrect data'));
     }
-    return next();
+    return next(error);
   }
 };
 

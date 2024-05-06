@@ -7,7 +7,7 @@ import {
   Document,
 } from 'mongoose';
 import bcrypt from 'bcrypt';
-import BadRequest from '../utils/errors/BadRequest';
+import Unathorized from '../utils/errors/Unathorized';
 // Здесь описание схемы пользователя
 
 interface IUser {
@@ -65,12 +65,12 @@ userSchema.static('findUserByCredentials', function findUserByCredentials(email:
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new BadRequest('Wrong email or password'));
+        return Promise.reject(new Unathorized('Wrong email or password'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new BadRequest('Wrong email or password'));
+            return Promise.reject(new Unathorized('Wrong email or password'));
           }
           return user;
         });
