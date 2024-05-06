@@ -6,7 +6,6 @@ import User from '../models/user';
 import BadRequest from '../utils/errors/BadRequest';
 import NotFound from '../utils/errors/NotFound';
 import Conflict from '../utils/errors/Conflict';
-import Unathorized from '../utils/errors/Unathorized';
 // Контроллеры (controllers) содержат основную логику обработки запроса.
 // Методы описывают, как обрабатывать данные и какой результат возвращать.
 // Получаем всех пользователей
