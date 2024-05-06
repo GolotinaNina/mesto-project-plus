@@ -15,7 +15,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
     const users = await User.find({});
     return res.send(users);
   } catch (error) {
-    return next();
+    return next(error);
   }
 };
 
